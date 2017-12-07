@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='ASCII'?>
+<block>
+  <name>ThumbDVdec</name>
+  <key>ThumbDVdec</key>
+  <category>hpsdr</category>
+  <import>execfile("/home/tom/.grc_gnuradio/ThumbDVdec.py")</import>
+  <make>ThumbDVdec($DVmode, $DeviceID)</make>
+  <callback>set_DVmode($DVmode)</callback>
+  <!-- <callback>set_DeviceID($DeviceID)</callback>  -->
+  <param>
+    <name>DV Mode</name>
+    <key>DVmode</key>
+    <value>2000</value>
+    <type>int</type>
+  </param>
+  <sink>
+    <name>inp</name>
+    <type>float</type>
+    <vlen>1</vlen>
+    <optional>1</optional>
+  </sink>
+  <sink>
+    <name>msg_in</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>float</type>
+    <vlen>1</vlen>
+    <optional>1</optional>
+  </source>
+  <source>
+    <name>msg_out</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+<doc>
+~/.grc_gnuradio/ThumbDV.py
+
+This block is both the encoder and decoder for a DVSI 3000
+USB stick based Thumb digital vocoder from Northwest Digital Radio (NWDR).
+The streaming input and output ports consists of floating points at an
+8 Ks/s rate. 
+
+The compressed audio samples (input to decoder, output from encoder)
+are PMT (polymorphic) message ports of array of unsigned bytes.
+
+The audio waveform input and output ports are 32-bit floats at 8 ks/s
+streaming.
+
+Audio input goes to the encoder which produces the message output.
+Message input goes to decoder which produces the audio output.
+
+This block also contains the common I/O for the USB stick, selecting the device
+based on the string (e.g. /dev/ttyUSB0 typical on Ubuntu, different on other
+systems) and communicating to the stick.  All of the I/O for both encoding
+and decoding is done through one serial port, and this module figures out
+which stick responses need to go to the encoder and which to the decoder.
+ 
+If the decoder function is not needed, don't hook up the msg_in port and
+the float out port. If the encoder function is not needed, don't hook up the
+msg_out and the float inp port.
+
+Parameters:
+DVmode - the mode of the encoder and decoder. Both encoder and decoder must be
+set to the same mode (USB stick hardware limitation). The encoder mode is forced
+by the selection within this module.  Mode choices include vocoder rate,
+forward error correction settings, etc.
+
+DeviceID - a string representing the device - e.g.  /dev/ttyUSB0 is likely for
+Ubuntu, other operating systems may have a different format.
+
+</doc>
+<grc_source></grc_source>
+</block>
