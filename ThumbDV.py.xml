@@ -1,39 +1,51 @@
 <?xml version='1.0' encoding='ASCII'?>
 <block>
-  <name>ThumbDVdec</name>
-  <key>ThumbDVdec</key>
+  <name>ThumbDV</name>
+  <key>ThumbDV</key>
   <category>hpsdr</category>
-  <import>execfile("/home/tom/.grc_gnuradio/ThumbDVdec.py")</import>
-  <make>ThumbDVdec($DVmode, $DeviceID)</make>
-  <callback>set_DVmode($DVmode)</callback>
-  <!-- <callback>set_DeviceID($DeviceID)</callback>  -->
+  <import>execfile("/home/tom/.grc_gnuradio/ThumbDV.py")</import>
+  <make>ThumbDV($DVmode, $DeviceID)</make>
   <param>
     <name>DV Mode</name>
     <key>DVmode</key>
-    <value>2000</value>
-    <type>int</type>
+    <value>0</value>
+    <type>enum</type>
+    <option>
+      <name>DSTAR</name>
+      <key>0</key>
+    </option>
+    <option>
+      <name>DMR</name>
+      <key>1</key>
+    </option>
+  </param>
+  <param>
+    <name>Device Serial ID</name>
+    <key>DeviceID</key>
+    <value>'/dev/ttyUSB0'</value>
+    <type>string</type>
   </param>
   <sink>
     <name>inp</name>
     <type>float</type>
     <vlen>1</vlen>
-    <optional>1</optional>
+    <optional>0</optional>
   </sink>
   <sink>
     <name>msg_in</name>
     <type>message</type>
-    <optional>1</optional>
+    <optional>0</optional>
   </sink>
   <source>
     <name>out</name>
     <type>float</type>
     <vlen>1</vlen>
-    <optional>1</optional>
+    <optional>0</optional>
   </source>
   <source>
     <name>msg_out</name>
     <type>message</type>
-    <optional>1</optional>
+    <optional>0</optional>
   </source>
 <doc>
 ~/.grc_gnuradio/ThumbDV.py
@@ -44,7 +56,7 @@ The streaming input and output ports consists of floating points at an
 8 Ks/s rate. 
 
 The compressed audio samples (input to decoder, output from encoder)
-are PMT (polymorphic) message ports of array of unsigned bytes.
+are PMT (polymorphic) message ports of array[0..8] of unsigned bytes.
 
 The audio waveform input and output ports are 32-bit floats at 8 ks/s
 streaming.
@@ -59,17 +71,17 @@ and decoding is done through one serial port, and this module figures out
 which stick responses need to go to the encoder and which to the decoder.
  
 If the decoder function is not needed, don't hook up the msg_in port and
-the float out port. If the encoder function is not needed, don't hook up the
+the float out port.  If the encoder function is not needed, don't hook up the
 msg_out and the float inp port.
 
 Parameters:
-DVmode - the mode of the encoder and decoder. Both encoder and decoder must be
-set to the same mode (USB stick hardware limitation). The encoder mode is forced
-by the selection within this module.  Mode choices include vocoder rate,
-forward error correction settings, etc.
+DVmode - the mode of the encoder and decoder (DSTAR or DMR). DMR is same
+as P25 half-rate. Both encoder and decoder must be set to the same mode
+(USB stick hardware limitation). Mode choices include vocoder rate, forward
+error correction settings, etc.
 
 DeviceID - a string representing the device - e.g.  /dev/ttyUSB0 is likely for
-Ubuntu, other operating systems may have a different format.
+Ubuntu, other operating systems will have a different format.
 
 </doc>
 <grc_source></grc_source>
