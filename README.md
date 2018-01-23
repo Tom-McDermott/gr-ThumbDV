@@ -4,17 +4,21 @@ Gnuradio interface for NWDR Thumb DV USB Stick
 
 This module implements an interface from gnuradio (and GRC) to
 a North West Digital Radio (NWDR) AMBE Vocoder USB Stick
-which contains a DVSI 3000 AMBE encoder/decodeer chip.
+which contains a DVSI 3000 AMBE encoder/decoder chip.
 The stick implements a USB based device that emulates
-a serial interface at 406,800 bps.  You must specify which USB
+a serial interface at 460,800 bps.  You must specify which USB
 interface you have the NWDR stick plugged into.  On Ubuntu this
 would typically be something like /dev/ttyUSB0
 
 Implemented in Python 2.7, not yet using standard make/build/install
-method.  To use this as is, copy the ThumbDV.py and ThumbDV.py.xml
-modules into the  .grc_gnuradio directory and hand-edit the path
-string in the XML file. Expect this module to change as further
-related OOT modules are implemented.
+method. To use this as is:
+
+1. Copy the ThumbDV.py and ThumbDV.py.xml  modules into the
+  .grc_gnuradio directory.
+2. Hand-edit the path string in the XML file.
+
+Expect this module to change as further related OOT modules are
+implemented.
 
 The gr-ThumbDV module encapsulates the interface to the
 NWDR USB stick so that it provides 4 interfaces:
