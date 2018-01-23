@@ -86,10 +86,8 @@ class ThumbDV(gr.basic_block):
 #	self.port.write(getVersion)
 #        print 'Product Version: ',
 #        leng, dat = self.DVSIRecv(self.port)
-
-
 # back to our regular programming
-#        self.port.write(setDstar)
+
 
         if self.DVmode == 0:
             self.DVSISend(self.port, setDstar, '')
@@ -157,7 +155,6 @@ class ThumbDV(gr.basic_block):
                 PCMint = np.array(PCMf, dtype=np.dtype('>i2'))
                 self.consume(0, 160)    # consume 160 floats from input[0]
                 self.InQueueDepth += 1
-#                print 'A',  # TODO - debug
                 self.DVSISend(self.port, encodePCM, bytearray(PCMint))
 
 
@@ -205,7 +202,6 @@ class ThumbDV(gr.basic_block):
                 self.InQueueDepth -= 1
                 if self.InQueueDepth < 0:
                     print 'ERROR: Underrun of InQueueDepth: ', self.InQueueDepth
-#                print 'B', # TODO - debug
                 return 160    # produced 160 samples on the output stream
             else:
                 print ("AMBE Decoder invalid packet length : ", len(data))
@@ -222,11 +218,7 @@ class ThumbDV(gr.basic_block):
         and ask it to decode to audio PCM.
         '''
         dat = pmt.to_python(msg)  # dat is an np.array[9] of type np.uint8
-#        encList = dat.tolist()	  # nparray to python array
-#        self.DVSISend(self.port, decodeAMBE, bytearray(encList))
-
         self.DVSISend(self.port, decodeAMBE, dat.tobytes())
-#        print 'I',    # TODO - debug
               
 
     def send_msg(self, msg):
@@ -237,7 +229,6 @@ class ThumbDV(gr.basic_block):
         '''
         dat = pmt.to_pmt(msg)
         self.message_port_pub(pmt.intern('msg_out'), dat)
-#        print 'O',   # TODO - debug
 
 
 # GRC callback handler
@@ -258,8 +249,6 @@ class ThumbDV(gr.basic_block):
             stopbits=serial.STOPBITS_ONE, xonxoff=False,
             rtscts=False, write_timeout=0, dsrdtr=False)
 
-#        if port:
-#            print 'Port = ', port
         port.flushInput()
         port.flushOutput()
         return port
@@ -275,7 +264,6 @@ class ThumbDV(gr.basic_block):
             y = 0
             if len(data) >= 0:
                 y = port.write(data)
-#            print 'W', x+y,   # TODO debug
             return 0
         else:
             print "wsO"   # write to serial Overflowed
@@ -307,7 +295,6 @@ class ThumbDV(gr.basic_block):
 
         if self.RxAwaiting == 0:    # receiver is idle
             if port.in_waiting < 4:   # 4 is packet header size
-#                print 'R' + str(port.in_waiting),   # TODO - debug  
                 return "", 0
             else:
                 rcvheader = port.read(4)    # Received serial packet length
@@ -315,16 +302,12 @@ class ThumbDV(gr.basic_block):
                     print 'Invalid response type from serial DVSI read:',
                     print '[0] = ', ord(rcvheader[0])
                     self.RxAwaiting = 0
-                    # port.flushInput()
                     return "", -1     # error trying to receive
                 else:               
                     packetLen = (ord(rcvheader[1]) * 256) + ord(rcvheader[2])
                     self.RxAwaiting = packetLen  # how many characters to await
                     self.RxCommand = ord(rcvheader[3])  # the command we got
-#                    print 'R1', self.RxCommand,  # TODO - debug
-                    #return, "", 0     # empty return
 
-        # self.RxAwaiting > 0  we're waiting for complete dataframe
         if port.in_waiting < self.RxAwaiting:
             return "", 0      # do not have the whole dataframe yet
         else:
@@ -342,7 +325,6 @@ class ThumbDV(gr.basic_block):
                 return "", -1
  
             self.RxAwaiting = 0  # finished rx'ing packet, wait for next
-#            print 'Rf',    # TODO debug
             return self.RxData, self.RxCommand
 
 
